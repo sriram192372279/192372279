@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+
+int char_count = 0;  // To store the number of characters
+int line_count = 0;  // To store the number of lines
+int word_count = 0;  // To store the number of words
+%}
+
+%%
+\n      { line_count++; }  // Increment line count on newline
+[ \t]+  { char_count += yyleng; }  // Add number of characters from spaces or tabs
+[a-zA-Z0-9_]+ { word_count++; char_count += yyleng; }  // Count words and add their length to character count
+.       { char_count++; }  // For any other character, increment character count
+%%
+
+int yywrap() {
+    return 1;  // Return 1 to signal end of input
+}
+
+int main() {
+    yylex();  // Run the lexer to process the input
+    // Print the results
+    printf("Number of Lines: %d\n", line_count);
+    printf("Number of Words: %d\n", word_count);
+    printf("Number of Characters: %d\n", char_count);
+    return 0;  // Return 0 to indicate successful execution
+}
